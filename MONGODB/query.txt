@@ -1,0 +1,76 @@
+1.Demonstrate the usage of $match, $group, aggregate pipelines.
+   
+
+> db.marks.aggregate [ { $match:{Pass:"TRUE"} }, { $group:{_id: "$Name"} } ] );
+{ "_id" : "Aishwarya" }
+{ _id" : "Nathan" }
+{
+"_id" : "Tony" }
+{ "_id" : "Vinod" }
+{ "_id" : "Sanket" }
+{ "_id" : "Priyanka" }
+{ "_id" : "Sakshi" }
+{ "_id" : "Lionel" }
+{ "_id" : "Surendra" }
+{ "_id" : "Yogesh" }
+{ _id" : "Stark" }
+{ "_id" : "Narendra" }
+{ "_id" : "Kaif" }
+{ "_id" : "Rohan" }
+
+
+2.Demonstrate the Map-Reduce aggregate function on this dataset.  
+
+> var mapper = function () {
+emit(this.Name, this.Subject1)
+};
+> var reducer = function (Name, Subject1) {
+... return Array.sum(Subject1)
+};
+> db.marks.mapReduce(mapper, reducer, {
+out: "result"
+});
+{ "result" : "result", "ok" : 1 }
+> db.result.find();
+{"_id" : "Rohan", "value" : 74 }
+{ "_id" : "Aishwarya", "value" : 48 }
+{ "_id" : "Naitik", "value" : 79 }
+{"_id" : "Narendra", "value" : 58 }
+{ "_id" : "Kaif", "value" : 45 }
+{"_id" : "Stark", "value" : 160 }
+{ "_id" : "Rashmika", "value" : 23 }
+{ "_id" : "Yogesh", "value" : 99 }
+id" : "Somesh", "value" : 56 }
+{ "_id" : "Surendra", "value" : 90 }
+{ "_id" : "Priyanka", "value" : 56 }
+{ "_id" : "Lionel", "value" : 89 }
+_id" : "Vinod", "value" : 84 }
+{ "_id" : "Sanket", "value" : 157 }
+{ "_id" : "Tony", "value" : 69 }
+{ "_id" : "Nathan", "value" : 40 }
+{ "_id" : "Utkarsh", "value" : 14 }
+
+
+3.Count the number of students who had passed in at least 2 subjects.
+
+> db.marks.aggregate(
+[{$match:{$and:[{Subject1: {$gt:44}},{Subject2:{$gt:44}}]}},{$count:"pass"}]);
+{ "pass" : 13 }
+
+
+4.Demonstrate the Alter and Drop commands on this dataset. 
+
+
+> db.marks.find({USN:"1NT18IS136"});
+{ "_id" : ObjectId("60ef3a53f7160611332f27f7"), "Name" : "Sanket", "USN" : "1NT18IS136", "Subject1" : 90, "Subject2" : 67, "Subject3" : 85, "Pass" : "TRUE" }
+> db.marks.update (     {         USN: "1NT18IS136"     },     {         $set: {            Subject1:89,            Subject2:69         }     } );
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.marks.find({USN:"1NT18IS136"});
+{ "_id" : ObjectId("60ef3a53f7160611332f27f7"), "Name" : "Sanket", "USN" : "1NT18IS136", "Subject1" : 89, "Subject2" : 69, "Subject3" : 85, "Pass" : "TRUE" }
+> show collections;
+marks
+result
+> db.result.drop();
+true
+> show collections;
+marks
